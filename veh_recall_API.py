@@ -113,31 +113,32 @@ def get_recalls():
     Pandas dataframe (sent as a payload) from API Call
     """
     print("\n\n\n Started processing the request..\n\n\n")
-    try:
+   
         #req_json = str(request.get_json())
         #req = pd.read_json("test_json.txt", typ='series')
 ##################
 
 #   REQUEST STRCUTRE
 #
-#{   'VIN': <>,
-#    'vehYear':<>,
-#    'vehMake':<>,
-#    'vehModel':<>
+#{   'VehVin': <>,
+#    'vehyear':<>,
+#    'vehmake':<>,
+#    'vehmodel':<>
 #  }
 
-#################        
+#################       
+    try: 
         req = request.json
         print("####This is the request:", req, '\n\n')
         
-        sentry.captureMessage(message='Started processing request- {}'.format(req['VIN']), level=logging.INFO)
+        sentry.captureMessage(message='Started processing request- {}'.format(req['VehVin']), level=logging.INFO)
         
     except Exception as e:
         print(e)
         sentry.captureMessage(message=e, level=logging.FATAL)
         
     if any(req.values()): #any values in the request?  
-        recall_req = 'https://one.nhtsa.gov/webapi/api/Recalls/vehicle/' + req['vehYear'] +'/'+ req['vehMake'] +'/' + req['vehModel'] +'?format=json'
+        recall_req = 'https://one.nhtsa.gov/webapi/api/Recalls/vehicle/' + req['vehyear'] +'/'+ req['vehmake'] +'/' + req['vehmodel'] +'?format=json'
         
     else:
         sentry.captureMessage(message='Empty Request!!!', level=logging.CRITICAL)
@@ -155,7 +156,7 @@ def get_recalls():
         print(recall_resp)
         # call the function to build the response text
         resp = build_resp(recall_resp.json())
-        sentry.captureMessage(message='completed processing the recall request - VIN: {}'.format(req['VIN']), level=logging.INFO)
+        sentry.captureMessage(message='completed processing the recall request - VIN: {}'.format(req['VehVin']), level=logging.INFO)
     
     except Exception as e:
         
